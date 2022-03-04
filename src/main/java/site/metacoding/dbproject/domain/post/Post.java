@@ -11,8 +11,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import site.metacoding.dbproject.domain.user.User;
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
 @Entity
 public class Post {
         // IDENTITY 전략은 DB에게 번호 증가 전략을 위임하는 것! - 디비에 맞게 알아서 찾아줌
