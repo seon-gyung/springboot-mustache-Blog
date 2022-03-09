@@ -2,7 +2,9 @@ package site.metacoding.dbproject.web;
 
 import java.util.Optional;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
@@ -58,7 +60,15 @@ public class UserController {
 
     // 로그인 페이지 (정적) - 로그인 X
     @GetMapping("/loginForm")
-    public String loginForm(){
+    public String loginForm(HttpServletRequest request, Model model) {
+        // request.getHeader("Cookie");
+        Cookie[] cookies = request.getCookies(); // jS
+        for (Cookie cookie : cookies) {
+            System.out.println("쿠키값 : " + cookie.getName());
+            if (cookie.getName().equals("remember")) {
+                model.addAttribute("remember", cookie.getValue());
+            }
+        }
         return "user/loginForm";
     }
 
@@ -68,8 +78,8 @@ public class UserController {
     // 이유 : 주소에 패스워드를 남길 수 없으니까!!!!!!!!
     // 로그인 X
     @PostMapping("/login")
-    public String login(HttpServletRequest request, User user){
-        HttpSession session = request.getSession(); // 쿠키에 sessionId : 85 
+    public String login(User user, HttpServletResponse response){
+        System.out.println("사용자로부터 받은 username, password : " + user);
 
         User userEntity = userRepository.mLogin(user.getUsername(), user.getPassword());
 
@@ -78,6 +88,10 @@ public class UserController {
         } else {
             System.out.println("로그인 되었습니다.");
             session.setAttribute("principal", userEntity);
+
+            if (user.getRemember().equals("on")) {
+                response.setHeader("Set-Cookie", "remember=" + user.getUsername());
+            }
         }
 
         // 1. DB 연결해서 username, password 있는지 확인
