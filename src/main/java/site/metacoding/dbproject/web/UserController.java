@@ -61,12 +61,17 @@ public class UserController {
     // 로그인 페이지 (정적) - 로그인 X
     @GetMapping("/loginForm")
     public String loginForm(HttpServletRequest request, Model model) {
+        // jSessionId=fjsdklfjsadkfjsdlkj333333;remember=ssar
         // request.getHeader("Cookie");
-        Cookie[] cookies = request.getCookies(); // jS
-        for (Cookie cookie : cookies) {
-            System.out.println("쿠키값 : " + cookie.getName());
-            if (cookie.getName().equals("remember")) {
-                model.addAttribute("remember", cookie.getValue());
+        if (request.getCookies() != null) {
+            Cookie[] cookies = request.getCookies(); // jSessionId, remember 두개가 있음.
+
+            for (Cookie cookie : cookies) {
+                System.out.println("쿠키값 : " + cookie.getName());
+                if (cookie.getName().equals("remember")) {
+                    model.addAttribute("remember", cookie.getValue());
+                }
+
             }
         }
         return "user/loginForm";
@@ -89,10 +94,12 @@ public class UserController {
             System.out.println("로그인 되었습니다.");
             session.setAttribute("principal", userEntity);
 
-            if (user.getRemember().equals("on")) {
-                response.setHeader("Set-Cookie", "remember=" + user.getUsername());
-            }
+            if (user.getRemember() != null && user.getRemember().equals("on")) {
+                response.addHeader("Set-Cookie", "remember=" + user.getUsername());
+                // response.addHeader(name, value);
+                // response.addCookie(cookie);
         }
+    }
 
         // 1. DB 연결해서 username, password 있는지 확인
         // 2. 있으면 session 영역에 인증됨 이라고 메시지 하나 넣어두자.
