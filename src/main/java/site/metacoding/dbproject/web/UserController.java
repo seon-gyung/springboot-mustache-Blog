@@ -40,7 +40,7 @@ public class UserController {
     // 회원가입 - 로그인 X
     @PostMapping("/join")
     public String join(User user){
-        
+
         // 1. username, password, email 1.null체크, 2.공백체크
         if (user.getUsername() == null || user.getPassword() == null || user.getEmail() == null) {
             return "redirect:/joinForm";
@@ -133,6 +133,7 @@ public class UserController {
     // 로그아웃 - 로그인 O
     @GetMapping("/logout")
     public String logout(){
-        return "메인 페이지를 돌려주면 됨"; // PostController 만들고 수정하자.
+        session.invalidate();
+        return "redirect:/loginForm"; // PostController 만들고 수정하자.
     }
 }
