@@ -1,9 +1,10 @@
 package site.metacoding.dbproject.service;
-
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,13 +14,13 @@ import site.metacoding.dbproject.domain.post.PostRepository;
 import site.metacoding.dbproject.domain.user.User;
 
 @RequiredArgsConstructor
-@Service
+@Service // IoC 컨테이너에 띄움
 public class PostService {
 
     private final PostRepository postRepository;
 
     public Page<Post> 글목록보기(Integer page){
-        PageRequest pq = PageRequest.of(page, 3);
+        PageRequest pq = PageRequest.of(page, 3, Sort.by(Direction.DESC, "id")); // 최신글부터 보기
         return postRepository.findAll(pq);
     }
 
